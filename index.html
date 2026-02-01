@@ -463,7 +463,7 @@
     </div>
 
     <!-- AUTO SCROLL SCRIPT & FORM HANDLER -->
-    <script>
+    <!-- <script>
 
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzpTN6O2BLkKqT7HIXLRY34Fi83egoo0fePPZnQUvqJv2txSBdTw2T1ttORwtNnC_Nv/exec';
 
@@ -536,6 +536,84 @@
         });
         
         console.log("Silver 6 Landing Page Loaded");
+    </script> -->
+
+    <!-- AUTO SCROLL SCRIPT & FORM HANDLER -->
+    <script>
+
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxwsst6S0uaTWS9uWaPAlgiwZGhpx049B-nCMxwj4SvB7UrurMve5FI3SsQN9Y315r9xg/exec';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. CAROUSEL LOGIC
+            const slider = document.getElementById('product-slider');
+            if (slider) {
+                setInterval(() => {
+                    const scrollAmount = slider.clientWidth * 0.8;
+                    const maxScroll = slider.scrollWidth - slider.clientWidth;
+                    if (slider.scrollLeft >= maxScroll - 10) {
+                         slider.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                    }
+                }, 2000);
+            }
+
+            // 2. FORM SUBMISSION LOGIC
+            const form = document.getElementById('orderForm');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const submitBtn = document.getElementById('submitBtn');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Stop default reload
+                
+                if(WEB_APP_URL === 'YOUR_WEB_APP_URL_HERE') {
+                    alert("Error: Script URL not set. Please update the HTML file.");
+                    return;
+                }
+
+                // Show loading UI
+                loadingOverlay.style.display = 'flex';
+                submitBtn.disabled = true;
+
+                // Collect Data
+                const formData = new FormData(form);
+                const data = {
+                    website: 'silver6_tea', // ADD THIS LINE
+                    name: formData.get('name'),
+                    phone: formData.get('phone'),
+                    address: formData.get('address')
+                };
+
+                // Send Data to Google Script
+                fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    loadingOverlay.style.display = 'none';
+                    submitBtn.disabled = false;
+                    
+                    if(result.result === 'success') {
+                        // Success: Clear form and show message
+                        form.reset();
+                        alert('धन्यवाद! तपाईंको अर्डर प्राप्त भयो। हामी छिट्टै सम्पर्क गर्नेछौं।\n(Order Successful!)');
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                })
+                .catch(error => {
+                    loadingOverlay.style.display = 'none';
+                    submitBtn.disabled = false;
+                    console.error('Error:', error);
+                    alert('Something went wrong. Please call us directly.');
+                });
+            });
+        });
+        
+        console.log("Silver 6 Landing Page Loaded");
     </script>
+    
 </body>
 </html>
